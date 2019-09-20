@@ -1,0 +1,35 @@
+1. ¿Que es OpenMP?
+Un grupo de directivas de compilador y rutinas de biblioteca para simplificar la escritura de aplicaciones con hilos en los lenguajes de C, C++ y Fortran. 
+
+2. ¿Como se define una region paralela en OpenMP utilizando pragmas?
+se define con la directiva de preprocesador #pragma omp parallel y el código se encierra entre corchetes ({})
+
+#pragma omp parallel 
+{
+	//codigo paralelo
+}
+
+3. ¿Como se define la cantidad de hilos a utilizar al paralelizar usando OpenMP?
+
+Se utiliza la función omp_set_num_threads(x), donde x es la cantidad de hilos a usar, de otro modo se utiliza el valor en la variable de ambiente OMP_NUM_THREADS, estas dos variables controlan la cantidad máxima de hilos que puede tener un equipo de threads de una región paralela de OpenMP. Existe una configuración de "equipos dinámicos" que puede elegir un número diferente de hilos si se encuentra apropiado durante la ejecución del programa. Esta opción se puede remover llamando la función  omp_set_dynamic(0) o cambiando el valor de la variable de ambiente OMP_DYNAMIC a false.
+
+4. ¿Como se compila un codigo fuente c para utilizar OpenMP y que encabezado debe
+incluirse?
+
+Se debe incluir el archivo de encabezado "omp.h" con una sentencia 
+#include <omp.h>
+
+Para compilar usando OpenMP se debe pasar la opcion -fopenmp al compilador, por ejemplo
+$ gcc -fopenmp hello.c -o hello
+
+5. ¿Como maneja OpenMP la sincronización entre hilos y por que esto es importante?
+	OpenMP provee distintas directivas que se pueden usar para sincronizar los hilos
+	critical: el codigo dentro del bloque es ejecutado por un hilo a la vez, sirve para proteger memoria compartida de condiciones de carrera
+
+	atomic: el código dentro del bloque se ejecuta de manera atómica, específicamente las escrituras de variables o lecturas, modficaciones y escritura. Se utilizan instrucciones especiales que pueden dar mejor desempeño que usando critical
+
+	ordered: el código dentro del bloque se ejecuta en el orden en que se hubiera ejecutado de manera secuencial
+
+	barrier: cuando se usa nua barrera todos los hilos al llegar a esta, deben esperar a que todos los otros hilos del equipo lleguena a barrera tambien antes de continuar. Los bloques de trabajo paralelo tienen una barrera implícita el final en el corchete de cierre "}"
+
+	nowait: es utilizado para remover el barrier implícito en los bloques de código paralelo. Es decir, los threads pueden continuar sin tener que esperar a que los demas terminen.
